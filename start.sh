@@ -20,9 +20,12 @@ server {
   location /healthz {
     access_log off;
     return 200;
+    break;
   }
-  if (\$http_x_forwarded_proto != "https") {
-    return 301 https://\$server_name\$request_uri;
+  location / {
+    if (\$http_x_forwarded_proto != "https") {
+      return 301 https://\$host\$request_uri;
+    }
   }
   root $ROOT_PATH;
 }
