@@ -17,6 +17,8 @@ server {
   listen $PORT;
   gzip on;
   gzip_disable "msie6";
+  index index.html;
+  root $ROOT_PATH;
   location /healthz {
     access_log off;
     return 200;
@@ -27,8 +29,7 @@ server {
       return 301 https://\$host\$request_uri;
     }
   }
-  root $ROOT_PATH;
 }
 EOF
-
+cat /etc/nginx/conf.d/default.conf
 nginx -g "daemon off;"
