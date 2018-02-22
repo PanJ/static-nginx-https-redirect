@@ -12,13 +12,26 @@ if [ -z "$ROOT_PATH" ]; then
 	exit 1
 fi
 
+SPA_CONFIG=""
+if [ "$SPA" = "true" ]; then
+	SPA_CONFIG="try_files \$uri /index.html;"
+fi
+
 cat <<EOF > /etc/nginx/conf.d/default.conf
 server {
   listen $PORT;
+
   gzip on;
   gzip_disable "msie6";
+  gzip_vary on;
+  gzip_proxied any;
+  gzip_comp_level 6;
+  gzip_buffers 16 8k;
+  gzip_http_version 1.1;
+  gzip_min_length 256;
+  gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript application/vnd.ms-fontobject application/x-font-ttf font/opentype image/svg+xml image/x-icon;
+  
   index index.html;
-  root $ROOT_PATH;
   location /healthz {
     access_log off;
     return 200;
@@ -28,8 +41,9 @@ server {
     if (\$http_x_forwarded_proto != "https") {
       return 301 https://\$host\$request_uri;
     }
+    root $ROOT_PATH;
+    $SPA_CONFIG
   }
 }
 EOF
-cat /etc/nginx/conf.d/default.conf
 nginx -g "daemon off;"
