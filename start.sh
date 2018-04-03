@@ -14,13 +14,13 @@ fi
 
 SPA_CONFIG=""
 if [ "$SPA" = "true" ]; then
-	SPA_CONFIG="try_files \$uri /index.html;"
+	SPA_CONFIG="try_files $uri $uri/ /index.html;"
 fi
 
 cat <<EOF > /etc/nginx/conf.d/default.conf
 server {
   listen $PORT;
-
+  port_in_redirect off;
   gzip on;
   gzip_disable "msie6";
   gzip_vary on;
