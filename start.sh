@@ -24,8 +24,7 @@ if [ "$DISABLE_REDIRECT" = "true" ]; then
 	REDIRECT_CONFIG=""
 fi
 
-# cat <<EOF > /etc/nginx/conf.d/default.conf
-cat <<EOF > test.conf
+cat <<EOF > /etc/nginx/conf.d/default.conf
 server {
   listen $PORT;
   port_in_redirect off;
@@ -50,6 +49,7 @@ server {
     root $ROOT_PATH;
     $SPA_CONFIG
   }
+  error_page 405 =200 $uri;
 }
 EOF
-# nginx -g "daemon off;"
+nginx -g "daemon off;"
